@@ -3,11 +3,12 @@ package com.example.testapplication;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-
 
 
     @Override
@@ -15,81 +16,72 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        Deck deck = new Deck();
+        deck.getRandomCard();
     }
 
-    public class DeckOfCards {
 
-        private String rank;
-        private int suit;
-        private Random randomRank = new Random();
-        private Random randomSuit = new Random();
+    public static class Card {
+        RANK rank;
+        SUIT suit;
 
-        private static final int HEARTS = 1;
-        private static final int CLUB = 2;
-        private static final int DIAMOND = 3;
-        private static final int SPADE = 4;
-
-        private static final int ACE = 1;
-        private static final int DUECE = 2;
-        private static final int THREE = 3;
-        private static final int FOUR = 4;
-        private static final int FIVE = 5;
-        private static final int SIX = 6;
-        private static final int SEVEN = 7;
-        private static final int EIGHT = 8;
-        private static final int NINE = 9;
-        private static final int TEN = 10;
-        private static final int JACK = 11;
-        private static final int QUEEN = 12;
-        private static final int KING = 13;
-
-
-        public DeckOfCards() {
+        public Card(RANK rank, SUIT suit) {
+            this.rank = rank;
             this.suit = suit;
-            this.rank = rankToString(getRank());
         }
 
-        public int getRank() {
-            int rank = randomRank.nextInt(13);
-            rank += 1;
-            return rank;
+        enum RANK {
+            ACE,
+            DUECE,
+            THREE,
+            FOUR,
+            FIVE,
+            SIX,
+            SEVEN,
+            EIGHT,
+            NINE,
+            TEN,
+            JACK,
+            QUEEN,
+            KING;
         }
 
-        public int getSuit() {
-            return suit;
+        enum SUIT {
+            HEARTS,
+            SPADES,
+            CLUBS,
+            DIAMONDS;
         }
+    }
 
-        public String rankToString(int rank) {
-            switch(rank) {
-                case ACE:
-                    return "ace";
-                case DUECE:
-                    return "duece";
-                case THREE:
-                    return "three";
-                case FOUR:
-                    return "four";
-                case FIVE:
-                    return "five";
-                case SIX:
-                    return "six";
-                case SEVEN:
-                    return "seven";
-                case EIGHT:
-                    return "eight";
-                case NINE:
-                    return "nine";
-                case TEN:
-                    return "ten";
-                case JACK:
-                    return "jack";
-                case QUEEN:
-                    return "queen";
-                case KING:
-                    return "king";
+    public class Deck {
+        ArrayList<Card> deck = new ArrayList<>();
+
+        public Deck() {
+            for (int i = 0; i < 52; i++) {
+                Card card = new Card(getRandomRank(), getRandomSuit());
+                deck.add(card);
             }
-            return String.valueOf(rank);
         }
+
+        private Card.RANK getRandomRank() {
+            Random randomRank = new Random();
+            int rank = randomRank.nextInt(Card.RANK.values().length);
+            return Card.RANK.values()[rank];
+        }
+
+        private Card.SUIT getRandomSuit() {
+            Random randomSuit = new Random();
+            int suit = randomSuit.nextInt(Card.SUIT.values().length);
+            return Card.SUIT.values()[suit];
+        }
+
+        public Card getRandomCard() {
+            Random randomCard = new Random();
+            int index = randomCard.nextInt(deck.size());
+            return deck.get(index);
+        }
+
+
     }
 }
