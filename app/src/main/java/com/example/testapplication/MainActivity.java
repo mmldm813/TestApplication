@@ -3,9 +3,9 @@ package com.example.testapplication;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Deck deck = new Deck();
-        deck.getRandomCard();
+        deck.shuffleDeckBackwards();
     }
 
 
@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         RANK rank;
         SUIT suit;
 
-        public Card(RANK rank, SUIT suit) {
+        public Card(SUIT suit, RANK rank) {
             this.rank = rank;
             this.suit = suit;
         }
@@ -55,33 +55,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public class Deck {
-        ArrayList<Card> deck = new ArrayList<>();
+        ArrayList<Card> cards;
 
         public Deck() {
-            for (int i = 0; i < 52; i++) {
-                Card card = new Card(getRandomRank(), getRandomSuit());
-                deck.add(card);
+            initDeck();
+        }
+
+        public void initDeck() {
+            cards = new ArrayList<>();
+            for (int i = 0; i < Card.SUIT.values().length; i++) {
+                for(int j = 0; j < Card.RANK.values().length; j++) {
+                    Card card = new Card(Card.SUIT.values()[i], Card.RANK.values()[j]);
+                    cards.add(card);
+                }
             }
         }
 
-        private Card.RANK getRandomRank() {
-            Random randomRank = new Random();
-            int rank = randomRank.nextInt(Card.RANK.values().length);
-            return Card.RANK.values()[rank];
+        public void shuffleDeck() {
+            ArrayList<Card> shuffledDeck = new ArrayList<>();
+            Random random= new Random();
+            for(int i = 0; i < cards.size(); i++) {
+                int card = random.nextInt(cards.size());
+                Card randomCard = cards.get(card);
+                shuffledDeck.add(randomCard);
+            }
+            cards = shuffledDeck;
         }
 
-        private Card.SUIT getRandomSuit() {
-            Random randomSuit = new Random();
-            int suit = randomSuit.nextInt(Card.SUIT.values().length);
-            return Card.SUIT.values()[suit];
+        public void shuffleDeckBackwards() {
+            Collections.reverse(cards);
         }
-
-        public Card getRandomCard() {
-            Random randomCard = new Random();
-            int index = randomCard.nextInt(deck.size());
-            return deck.get(index);
-        }
-
-
     }
 }
